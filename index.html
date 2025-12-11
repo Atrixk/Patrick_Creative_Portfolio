@@ -226,6 +226,17 @@
     <button id="back-to-top" aria-label="返回顶部">
         <i data-lucide="arrow-up" class="w-6 h-6"></i>
     </button>
+    
+    <!-- PDF 模态框 (全屏预览) -->
+    <div id="pdf-modal" class="fixed inset-0 z-[100] bg-black bg-opacity-90 hidden flex items-center justify-center p-4">
+        <div class="relative w-full h-full max-w-7xl max-h-full">
+            <button id="close-modal" class="absolute top-4 right-4 z-[101] text-white p-3 rounded-full bg-red-600 hover:bg-red-700 transition shadow-lg" aria-label="关闭 PDF 预览">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+            <!-- iframe 用于加载 PDF 文件，由浏览器内置的 PDF 阅读器渲染 -->
+            <iframe id="pdf-viewer" class="w-full h-full bg-white rounded-lg shadow-2xl" frameborder="0"></iframe>
+        </div>
+    </div>
 
     <!-- JavaScript for Theme Toggle, Language Switch, and Content Rendering -->
     <script>
@@ -324,9 +335,9 @@
                         {
                             name: "公司简介 PDF 演示文稿设计",
                             link: "Rubino_CompanyProfile_Dec2025.pdf", // 链接到上传的 PDF 文件
-                            description: "主导设计了面向建筑行业的 B2B 公司简介和品牌宣传册，确保了专业形象和 ISO 9001 质量目标的视觉传达。点击查看文件。",
+                            description: "主导设计了面向建筑行业的 B2B 公司简介和品牌宣传册，确保了专业形象和 ISO 9001 质量目标的视觉传达。点击预览。",
                             tags: ["PDF设计", "品牌手册", "B2B营销", "排版"],
-                            icon: "briefcase", // 更改为公事包，更符合公司文件主题
+                            icon: "briefcase", 
                             imageClass: "project-image-placeholder-rubino", // 新增图片类名
                             color: "primary"
                         },
@@ -483,7 +494,7 @@
                         {
                             name: "Corporate Profile PDF Presentation Design",
                             link: "Rubino_CompanyProfile_Dec2025.pdf", // Link to the uploaded PDF
-                            description: "Led the design and production of B2B corporate profiles and brand brochures for the architectural industry, ensuring professional presentation aligned with ISO 9001 quality objectives. Click to view file.",
+                            description: "Led the design and production of B2B corporate profiles and brand brochures for the architectural industry, ensuring professional presentation aligned with ISO 9001 quality objectives. Click to preview.",
                             tags: ["PDF Design", "Brand Brochure", "B2B Marketing", "Layout"],
                             icon: "briefcase",
                             imageClass: "project-image-placeholder-rubino", // New image class
@@ -525,19 +536,19 @@
                         {
                             title: "UI/UX & Design",
                             icon: "layout-grid",
-                            tags: ["Figma", "Framer", "Design System", "Web Design", "Mobile Design", "User Experience (UX)", "Visual Design", "Graphic Design"],
+                            tags: ["Figma", "Framer", "Design System", "网页设计", "移动端设计", "用户体验设计", "视觉设计", "图形设计"],
                             color: "primary"
                         },
                         {
-                            title: "Content & Media",
+                            title: "内容与媒体",
                             icon: "video",
-                            tags: ["Videography", "Adobe Premiere Pro", "Capcut", "Adobe Lightroom", "3D Modeling (Unity)", "Adobe Photoshop"],
+                            tags: ["摄像", "Adobe Premiere Pro", "Capcut", "Adobe Lightroom", "3D 建模 (Unity)", "Adobe Photoshop"],
                             color: "accent"
                         },
                         {
-                            title: "Marketing & Tools",
+                            title: "营销与工具",
                             icon: "bar-chart-3",
-                            tags: ["Paid Social Advertising", "Data-Driven Optimization", "Lead Conversion", "Cross-functional Collaboration", "Canva", "Excel"],
+                            tags: ["付费社交广告", "数据驱动优化", "线索转化", "跨职能协作", "Canva", "Excel"],
                             color: "green"
                         }
                     ]
@@ -552,6 +563,11 @@
         };
 
         let currentLang = 'cn'; // Default language is Chinese
+        
+        // Global references for the PDF Modal
+        const pdfModal = document.getElementById('pdf-modal');
+        const pdfViewer = document.getElementById('pdf-viewer');
+        const closeModalBtn = document.getElementById('close-modal');
 
         // --- RENDER FUNCTIONS ---
         
@@ -561,8 +577,6 @@
 
         // Helper function to render Lucide icons
         function renderIcon(name, classes) {
-            // FIXED: Instead of trying to render the SVG here (which causes the TypeError),
-            // we return the HTML structure Lucide expects to replace with an SVG later.
             // This is the robust way to handle dynamic content with Lucide.
             return `<span class="${classes}"><i data-lucide="${name}"></i></span>`;
         }
@@ -578,7 +592,6 @@
                 <a href="#skills" class="hover:text-[var(--color-primary)] transition duration-200">${content.nav.skills}</a>
                 <a href="#contact" class="hover:text-[var(--color-primary)] transition duration-200">${content.nav.contact}</a>
             `;
-            // Ensure icons are created after dynamic insertion (for the other render functions)
             lucide.createIcons();
         }
 
@@ -706,12 +719,11 @@
             document.getElementById('portfolio-title').textContent = content.portfolio.title;
             const portfolioList = document.getElementById('portfolio-list');
             
-            const html = content.portfolio.list.map(project => {
+            const html = content.portfolio.list.map((project, index) => {
                 const tagsHtml = project.tags.map(tag => `<span class="tag tag-${project.color}">${tag}</span>`).join('');
                 
-                // Determine the icon and the hover interaction color based on project type (e.g., PDF download or web link)
-                const iconComponent = project.icon || 'image'; // Use 'image' as default placeholder
-                const linkTarget = project.link === '#' ? '' : 'target="_blank" rel="noopener noreferrer"';
+                const iconComponent = project.icon || 'image';
+                const isPdfProject = project.link.endsWith('.pdf');
                 
                 // Determine placeholder content
                 let placeholderContent;
@@ -722,31 +734,70 @@
                     // Default icon placeholder
                     placeholderContent = `<i data-lucide="${iconComponent}" class="w-12 h-12 text-[var(--color-accent)] group-hover:text-[var(--color-primary)] transition duration-300"></i>`;
                 }
-                
-                return `
-                    <a href="${project.link}" ${linkTarget} class="card p-10 rounded-2xl hover:shadow-xl transition duration-300 flex flex-col justify-start text-left group">
-                        <div class="mb-4">
-                            <!-- Image/Visual Preview Area -->
-                            <div class="w-full h-32 bg-[var(--color-highlight-bg)] rounded-xl mb-6 flex items-center justify-center border border-[var(--color-border)] overflow-hidden">
-                                ${placeholderContent}
+
+                if (isPdfProject) {
+                    // Render as DIV with data attribute for click handling
+                    return `
+                        <div data-project-index="${index}" class="portfolio-card-trigger card p-10 rounded-2xl hover:shadow-xl transition duration-300 flex flex-col justify-start text-left group cursor-pointer">
+                            <div class="mb-4">
+                                <!-- Image/Visual Preview Area -->
+                                <div class="w-full h-32 bg-[var(--color-highlight-bg)] rounded-xl mb-6 flex items-center justify-center border border-[var(--color-border)] overflow-hidden">
+                                    ${placeholderContent}
+                                </div>
+                                
+                                <h4 class="text-xl font-bold text-[var(--color-text)] group-hover:text-[var(--color-primary)] transition duration-300">
+                                    ${project.name}
+                                    <i data-lucide="eye" class="w-4 h-4 ml-2 inline-block text-[var(--color-primary)] opacity-70"></i>
+                                </h4>
+                                <p class="text-sm text-[var(--color-accent)] mt-2 leading-relaxed">
+                                    ${project.description}
+                                </p>
                             </div>
-                            
-                            <h4 class="text-xl font-bold text-[var(--color-text)] group-hover:text-[var(--color-primary)] transition duration-300">
-                                ${project.name}
-                            </h4>
-                            <p class="text-sm text-[var(--color-accent)] mt-2 leading-relaxed">
-                                ${project.description}
-                            </p>
+                            <div class="flex flex-wrap gap-2 mt-4 pt-4 border-t border-[var(--color-border)]">
+                                ${tagsHtml}
+                            </div>
                         </div>
-                        <div class="flex flex-wrap gap-2 mt-4 pt-4 border-t border-[var(--color-border)]">
-                            ${tagsHtml}
-                        </div>
-                    </a>
-                `;
+                    `;
+                } else {
+                    // Render as A tag for external/non-pdf links
+                    const linkTarget = project.link === '#' ? '' : 'target="_blank" rel="noopener noreferrer"';
+                    return `
+                        <a href="${project.link}" ${linkTarget} class="card p-10 rounded-2xl hover:shadow-xl transition duration-300 flex flex-col justify-start text-left group">
+                            <div class="mb-4">
+                                <!-- Image/Visual Preview Area -->
+                                <div class="w-full h-32 bg-[var(--color-highlight-bg)] rounded-xl mb-6 flex items-center justify-center border border-[var(--color-border)] overflow-hidden">
+                                    ${placeholderContent}
+                                </div>
+                                
+                                <h4 class="text-xl font-bold text-[var(--color-text)] group-hover:text-[var(--color-primary)] transition duration-300">
+                                    ${project.name}
+                                    <i data-lucide="arrow-up-right" class="w-4 h-4 ml-2 inline-block text-[var(--color-primary)] opacity-70"></i>
+                                </h4>
+                                <p class="text-sm text-[var(--color-accent)] mt-2 leading-relaxed">
+                                    ${project.description}
+                                </p>
+                            </div>
+                            <div class="flex flex-wrap gap-2 mt-4 pt-4 border-t border-[var(--color-border)]">
+                                ${tagsHtml}
+                            </div>
+                        </a>
+                    `;
+                }
             }).join('');
 
             portfolioList.innerHTML = html;
             lucide.createIcons();
+            
+            // Attach click listeners to the PDF cards to open the modal
+            document.querySelectorAll('.portfolio-card-trigger').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    const index = e.currentTarget.getAttribute('data-project-index');
+                    const project = CONTENT[currentLang].portfolio.list[index];
+                    if (project && project.link.endsWith('.pdf')) {
+                        openPdfModal(project.link);
+                    }
+                });
+            });
         }
 
         // Renders the Skills Section
@@ -815,6 +866,28 @@
         }
 
         // --- GLOBAL UTILITIES ---
+        
+        // PDF Modal Logic
+        function openPdfModal(pdfUrl) {
+            pdfViewer.src = pdfUrl;
+            pdfModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            lucide.createIcons(); 
+        }
+
+        function closePdfModal() {
+            pdfModal.classList.add('hidden');
+            pdfViewer.src = ""; // Clear iframe source to stop loading/prevent memory leaks
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+
+        closeModalBtn.addEventListener('click', closePdfModal);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !pdfModal.classList.contains('hidden')) {
+                closePdfModal();
+            }
+        });
 
         // Scroll Progress Bar Logic
         function updateProgressBar() {
