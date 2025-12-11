@@ -486,122 +486,6 @@
                     ref: "Key Reference: LAI SWEE PIN, Chief Product Officer, ProppyApp Sdn Bhd"
                 },
                 footer: "© 2025 Patrick Cheng Ming Huan. All rights reserved."
-            },
-            en: {
-                nav: { about: "About Me", experience: "Experience", skills: "Skills", contact: "Contact" },
-                hero: {
-                    greeting: "Hello, I am",
-                    title: "Patrick Cheng Ming Huan",
-                    subtitle: "New Media Designer · UI/UX Specialist · Growth-Driven Marketer",
-                    cta_work: "View My Work",
-                },
-                about: {
-                    title: "About Me & Education",
-                    intro_1: "Creative and skilled in transforming ideas into impactful results. A strong team player with excellent communication skills and a deep passion for graphic and 3D design.",
-                    intro_2: "Trained in art since age 7, with a strong sense of responsibility, visual intuition, and innovation-driven thinking, committed to excellence in design and marketing.",
-                    edu_title: "Education",
-                    edu_usm: {
-                        degree: "Bachelor of Fine Arts (Hons) New Media Design and Technology",
-                        institution: "UNIVERSITY SAINS MALAYSIA - CGPA: 3.50",
-                        year: "2019-2023"
-                    },
-                    edu_stpm: {
-                        degree: "STPM - CGPA: 3.17",
-                        institution: "SEKOLAH MENENGAH KEBANGSAAN LAKSAMANA",
-                        year: "2017-2018"
-                    }
-                },
-                experience: {
-                    title: "Professional Experience & Achievements",
-                    list: [
-                        {
-                            role: "Marketing Executive",
-                            company: "RUBINO INDUSTRY SDN BHD",
-                            period: "AUG 2025 - PRESENT",
-                            icon: "trending-up",
-                            duties: [
-                                "Developed and executed a cohesive content strategy across platforms (FB, TikTok, IG, Xiao Hong Shu), producing and editing dynamic video (Reels) and high-impact banners.",
-                                "Led the visual redesign of core brand assets (product catalogs, name cards), ensuring brand consistency.",
-                                "Collaborated with management to strategize and execute paid social media advertising campaigns to maximize ROI."
-                            ],
-                            achievements: [
-                                "Drove a significant 605.2% increase in total interactions (677 interactions) on the primary Facebook account through successful organic engagement strategies.",
-                                "Achieved 10.75% audience growth on TikTok, resulting in over 20,700 video views.",
-                                "Successfully converted online leads into monthly customers, directly contributing to increased sales revenue."
-                            ]
-                        },
-                        {
-                            role: "UI/UX Designer & Marketing Material Assistant",
-                            company: "PROPPYAPP SDN BHD",
-                            period: "JUL 2023 - JUL 2025",
-                            icon: "pen-tool",
-                            duties: [
-                                "Led UI/UX design and iteration for core products, establishing and maintaining a consistent Design System.",
-                                "Collaborated closely with development teams within the Scrum framework, creating high-fidelity interactive prototypes.",
-                                "Executed the redesign of the main corporate website, optimizing for responsive design across devices.",
-                                "Managed corporate social media content, producing engaging video, animated, and static poster materials."
-                            ],
-                            achievements: [
-                                "Recognized as Top Performer twice (Feb & Apr 2024).",
-                                "Nominated multiple times for outstanding team contributions, validating excellence in cross-functional collaboration."
-                            ]
-                        },
-                        {
-                            role: "Multimedia, Graphic, & Production Hardware Intern",
-                            company: "FOOTFALL CAM (META RESEARCH)",
-                            period: "FEB 2023 - JUN 2023",
-                            icon: "box",
-                            duties: [
-                                "Designed posters, packaging decals, and product visuals for export to the U.S. market.",
-                                "Created 3D models and VR filters using Unity.",
-                                "Developed design templates and maintained the U.S. customer-facing Nursery Web.",
-                                "Managed 8 production stations for Footfall Cam assembly, including testing and inspection."
-                            ],
-                            achievements: []
-                        },
-                        {
-                            role: "Part Time - Graphic Designer",
-                            company: "RMD INTERNATIONAL SDN BHD",
-                            period: "NOV 2021 - JUL 2022",
-                            icon: "palette",
-                            duties: [
-                                "Designed marketing materials suchs as posters, flyers, and banners.",
-                                "Edited and refined corporate brochures to improve clarity and brand messaging."
-                            ],
-                            achievements: []
-                        }
-                    ]
-                },
-                skills: {
-                    title: "Core Skill Stack",
-                    languages: "Language Proficiency: Malay (Native), Chinese (Native), English (Fluent)",
-                    categories: [
-                        {
-                            title: "UI/UX & Design",
-                            icon: "layout-grid",
-                            tags: ["Figma", "Framer", "Design System", "Web & Mobile Design", "User Experience (UX)", "Visual/Graphic Design"],
-                            color: "primary"
-                        },
-                        {
-                            title: "Content & Media",
-                            icon: "video",
-                            tags: ["Videography", "Adobe Premiere Pro", "Capcut", "Adobe Lightroom", "3D Modeling (Unity)", "Adobe Photoshop"],
-                            color: "accent"
-                        },
-                        {
-                            title: "Marketing & Tools",
-                            icon: "bar-chart-3",
-                            tags: ["Paid Social Advertising", "Data-Driven Optimization", "Lead Conversion", "Cross-functional Collaboration", "Canva", "Excel"],
-                            color: "green"
-                        }
-                    ]
-                },
-                contact: {
-                    title: "Ready to Collaborate",
-                    p1: "Whether it's a creative project, a UI/UX challenge, or a marketing growth opportunity, I am eager to bring my design and business skills to the next team.",
-                    ref: "Key Reference: LAI SWEE PIN, Chief Product Officer, ProppyApp Sdn Bhd"
-                },
-                footer: "© 2025 Patrick Cheng Ming Huan. All rights reserved."
             }
         };
 
@@ -617,6 +501,7 @@
         function renderIcon(name, classes) {
             // FIXED: Instead of trying to render the SVG here (which causes the TypeError),
             // we return the HTML structure Lucide expects to replace with an SVG later.
+            // This is the robust way to handle dynamic content with Lucide.
             return `<span class="${classes}"><i data-lucide="${name}"></i></span>`;
         }
 
