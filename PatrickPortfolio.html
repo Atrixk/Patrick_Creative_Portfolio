@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patrick Cheng - Creative Portfolio</title>
+    <!-- 引入 Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Lucide Icons for aesthetic icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- 优化字体: Inter for Latin, Noto Sans SC for Chinese -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Sans+SC:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        /* 默认浅色模式 */
+        :root {
+            --color-bg: #f8f8fa;
+            --color-text: #1f2937;
+            --color-primary: #4f46e5; /* Blue/Indigo */
+            --color-accent: #f59e0b; /* Amber/Orange */
+            --color-card-bg: #ffffff;
+            --color-border: #e5e7eb;
+            --color-highlight-bg: #fef3c7; /* Light Amber/Yellow for achievements */
+        }
+        /* 深色模式 */
+        .dark {
+            --color-bg: #111827;
+            --color-text: #e5e7eb;
+            --color-primary: #818cf8; /* Light Indigo */
+            --color-accent: #fcd34d; /* Light Amber */
+            --color-card-bg: #1f2937;
+            --color-border: #374151;
+            --color-highlight-bg: #3f3612; /* Darker Yellow/Brown for achievements */
+        }
+
+        /* 统一字体栈 */
+        body {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .card {
+            background-color: var(--color-card-bg);
+            border: 1px solid var(--color-border);
+            transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        .achievement-box {
+            background-color: var(--color-highlight-bg);
+            border-left: 4px solid var(--color-accent);
+        }
+
+        /* 导航栏平滑滚动 */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* 响应式列表布局 for Experience */
+        .experience-card-container {
+            display: grid;
+            gap: 2rem;
+        }
+        @media (min-width: 768px) {
+            .experience-card-container {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- 导航栏 -->
+    <header class="sticky top-0 z-50 shadow-md bg-opacity-95 backdrop-blur-sm card">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-[var(--color-primary)]">Patrick Cheng</h1>
+            <div class="flex items-center space-x-4">
+                <nav class="hidden md:flex space-x-8" id="nav-links">
+                    <!-- Nav links populated by JS -->
+                </nav>
+                <button id="lang-toggle" class="p-2 rounded-full font-medium text-sm border border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white transition duration-200">
+                    EN/中文
+                </button>
+                <button id="theme-toggle" class="p-2 rounded-full hover:bg-[var(--color-border)] transition duration-200">
+                    <i data-lucide="moon" class="w-5 h-5 text-gray-500 dark:text-gray-300"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        
+        <!-- Hero Section (创意标题) -->
+        <section id="hero" class="text-center py-20 md:py-32">
+            <!-- Content populated by JS -->
+        </section>
+
+        <!-- 关于我 Section -->
+        <section id="about" class="py-16 border-t border-[var(--color-border)]">
+            <h3 class="text-4xl font-bold mb-8 text-center" id="about-title"></h3>
+            <div class="max-w-4xl mx-auto card p-8 shadow-xl rounded-2xl" id="about-content">
+                <!-- Content populated by JS -->
+            </div>
+        </section>
+
+        <!-- 经历 Section (卡片列表布局) -->
+        <section id="experience" class="py-16 border-t border-[var(--color-border)]">
+            <h3 class="text-4xl font-bold mb-12 text-center" id="experience-title"></h3>
+            
+            <div class="max-w-6xl mx-auto experience-card-container" id="experience-list">
+                <!-- Content populated by JS -->
+            </div>
+        </section>
+
+        <!-- 技能 Section -->
+        <section id="skills" class="py-16 border-t border-[var(--color-border)]">
+            <h3 class="text-4xl font-bold mb-12 text-center" id="skills-title"></h3>
+            <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto" id="skills-content">
+                <!-- Content populated by JS -->
+            </div>
+        </section>
+        
+        <!-- 联系方式 Section -->
+        <section id="contact" class="py-16 border-t border-[var(--color-border)] text-center">
+            <h3 class="text-4xl font-bold mb-6" id="contact-title"></h3>
+            <div id="contact-content">
+                <!-- Content populated by JS -->
+            </div>
+        </section>
+        
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-[var(--color-border)] py-8 text-center text-sm text-gray-500 dark:text-gray-400">
+        <p id="footer-text">&copy; 2025 Patrick Cheng Ming Huan. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript for Theme Toggle, Language Switch, and Content Rendering -->
+    <script>
+        // --- CONTENT DATA STRUCTURE (BILINGUAL) ---
+        const CONTENT = {
+            cn: {
+                nav: { about: "关于我", experience: "经历", skills: "技能", contact: "联系" },
+                hero: {
+                    greeting: "你好，我是",
+                    title: "Patrick Cheng Ming Huan",
+                    subtitle: "新媒体设计师 · UI/UX专家 · 增长驱动的营销人",
+                    cta_work: "查看我的工作",
+                },
+                about: {
+                    title: "关于我与教育背景",
+                    intro_1: "创新且拥有将想法转化为有影响力成果的能力。我是一个优秀的团队合作者，具备出色的沟通技巧，并对图形、3D 设计和新媒体充满深厚的热情。",
+                    intro_2: "自 7 岁起接受艺术训练，这赋予了我强烈的责任感、精准的视觉直觉和创新驱动的思维模式，致力于在设计和营销领域实现卓越。",
+                    edu_title: "教育背景 (Education)",
+                    edu_usm: {
+                        degree: "新媒体设计与技术学士 (Bachelor of Fine Arts Hons)",
+                        institution: "马来西亚理科大学 (UNIVERSITY SAINS MALAYSIA) - CGPA: 3.50",
+                        year: "2019-2023"
+                    },
+                    edu_stpm: {
+                        degree: "STPM - CGPA: 3.17",
+                        institution: "SEKOLAH MENENGAH KEBANGSAAN LAKSAMANA",
+                        year: "2017-2018"
+                    }
+                },
+                experience: {
+                    title: "职业经历与成就",
+                    list: [
+                        {
+                            role: "营销主管",
+                            company: "昇辉工业有限公司 (RUBINO INDUSTRY SDN BHD)",
+                            period: "AUG 2025 - PRESENT",
+                            icon: "trending-up",
+                            duties: [
+                                "制定跨平台 (FB, TikTok, IG, 小红书) 的内容策略，制作和编辑动态视频 (Reels) 和高影响力横幅。",
+                                "主导核心品牌资产的视觉重新设计（包括产品目录和名片），确保品牌一致性。",
+                                "与管理层合作，策略性地执行付费社交媒体广告活动，以最大化投资回报率 (ROI)。"
+                            ],
+                            achievements: [
+                                "通过成功的有机策略，将主要 Facebook 账户的总互动量提升 605.2% (677 次互动)。",
+                                "实现 TikTok 10.75% 的受众增长，总观看量超过 20,700 次。",
+                                "成功将线上线索转化为月度客户，直接贡献销售收入。"
+                            ]
+                        },
+                        {
+                            role: "UI/UX 设计师 & 营销材料助理",
+                            company: "PROPPYAPP SDN BHD",
+                            period: "JUL 2023 - JUL 2025",
+                            icon: "pen-tool",
+                            duties: [
+                                "主导多个核心产品的 UI/UX 设计与迭代，并建立和维护一致的 Design System。",
+                                "在 Scrum 框架内与开发团队紧密协作，并创建高保真交互原型进行设计演示。",
+                                "负责主公司网站的重新设计，优化主题以增强桌面和移动端的响应式设计。",
+                                "管理和策划企业社交媒体内容，制作引人入胜的视频、动画和海报材料。"
+                            ],
+                            achievements: [
+                                "两次被评为 Top Performer (2024年2月、4月)。",
+                                "多次获得杰出团队贡献提名，验证了跨职能协作的卓越性。"
+                            ]
+                        },
+                        {
+                            role: "多媒体/图形/硬件制作实习生",
+                            company: "FOOTFALL CAM (META RESEARCH)",
+                            period: "FEB 2023 - JUN 2023",
+                            icon: "box",
+                            duties: [
+                                "为出口美国市场设计海报、包装贴花和产品视觉图。",
+                                "使用 Unity 创建 3D 模型和 VR 过滤器。",
+                                "维护面向美国客户的 Nursery Web，并在 Scrum 团队中协作。",
+                                "管理 8 个生产站点的 Footfall Cam 组装、检测和包装工作。"
+                            ],
+                            achievements: []
+                        },
+                        {
+                            role: "兼职平面设计师",
+                            company: "RMD INTERNATIONAL SDN BHD",
+                            period: "NOV 2021 - JUL 2022",
+                            icon: "palette",
+                            duties: [
+                                "设计海报、传单和横幅等营销材料。",
+                                "编辑和改进企业宣传册，以提高清晰度和品牌信息传递。"
+                            ],
+                            achievements: []
+                        }
+                    ]
+                },
+                skills: {
+                    title: "核心技能栈",
+                    languages: "语言能力: 马来语 (母语), 华语 (母语), 英语 (流利)",
+                    categories: [
+                        {
+                            title: "UI/UX & 设计",
+                            icon: "layout-grid",
+                            tags: ["Figma", "Framer", "设计系统 (Design System)", "Web & Mobile Design", "用户体验设计 (UX)", "视觉/图形设计"],
+                            color: "primary"
+                        },
+                        {
+                            title: "内容与媒体",
+                            icon: "video",
+                            tags: ["Videography (摄像)", "Adobe Premiere Pro", "Capcut", "Adobe Lightroom", "3D 模型 (Unity)", "Adobe Photoshop"],
+                            color: "accent"
+                        },
+                        {
+                            title: "营销与工具",
+                            icon: "bar-chart-3",
+                            tags: ["付费社交广告", "数据驱动优化", "线索转化", "跨职能协作", "Canva", "Excel"],
+                            color: "green"
+                        }
+                    ]
+                },
+                contact: {
+                    title: "期待合作",
+                    p1: "无论是创意项目、UI/UX 挑战还是营销增长机会，我都渴望将我的设计和商业技能带入下一个团队。",
+                    ref: "**主要推荐人:** LAI SWEE PIN, ProppyApp Sdn Bhd 首席产品官 (Chief Product Officer)"
+                },
+                footer: "© 2025 Patrick Cheng Ming Huan. All rights reserved."
+            },
+            en: {
+                nav: { about: "About Me", experience: "Experience", skills: "Skills", contact: "Contact" },
+                hero: {
+                    greeting: "Hello, I am",
+                    title: "Patrick Cheng Ming Huan",
+                    subtitle: "New Media Designer · UI/UX Specialist · Growth-Driven Marketer",
+                    cta_work: "View My Work",
+                },
+                about: {
+                    title: "About Me & Education",
+                    intro_1: "Creative and skilled in transforming ideas into impactful results. A strong team player with excellent communication skills and a deep passion for graphic and 3D design.",
+                    intro_2: "Trained in art since age 7, with a strong sense of responsibility, visual intuition, and innovation-driven thinking, committed to excellence in design and marketing.",
+                    edu_title: "Education",
+                    edu_usm: {
+                        degree: "Bachelor of Fine Arts (Hons) New Media Design and Technology",
+                        institution: "UNIVERSITY SAINS MALAYSIA - CGPA: 3.50",
+                        year: "2019-2023"
+                    },
+                    edu_stpm: {
+                        degree: "STPM - CGPA: 3.17",
+                        institution: "SEKOLAH MENENGAH KEBANGSAAN LAKSAMANA",
+                        year: "2017-2018"
+                    }
+                },
+                experience: {
+                    title: "Professional Experience & Achievements",
+                    list: [
+                        {
+                            role: "Marketing Executive",
+                            company: "RUBINO INDUSTRY SDN BHD",
+                            period: "AUG 2025 - PRESENT",
+                            icon: "trending-up",
+                            duties: [
+                                "Developed and executed a cohesive content strategy across platforms (FB, TikTok, IG, Xiao Hong Shu), producing and editing dynamic video (Reels) and high-impact banners.",
+                                "Led the visual redesign of core brand assets (product catalogs, name cards), ensuring brand consistency.",
+                                "Collaborated with management to strategize and execute paid social media advertising campaigns to maximize ROI."
+                            ],
+                            achievements: [
+                                "Drove a significant 605.2% increase in total interactions (677 interactions) on the primary Facebook account through successful organic engagement strategies.",
+                                "Achieved 10.75% audience growth on TikTok, resulting in over 20,700 video views.",
+                                "Successfully converted online leads into monthly customers, directly contributing to increased sales revenue."
+                            ]
+                        },
+                        {
+                            role: "UI/UX Designer & Marketing Material Assistant",
+                            company: "PROPPYAPP SDN BHD",
+                            period: "JUL 2023 - JUL 2025",
+                            icon: "pen-tool",
+                            duties: [
+                                "Led UI/UX design and iteration for core products, establishing and maintaining a consistent Design System.",
+                                "Collaborated closely with development teams within the Scrum framework, creating high-fidelity interactive prototypes.",
+                                "Executed the redesign of the main corporate website, optimizing for responsive design across devices.",
+                                "Managed corporate social media content, producing engaging video, animated, and static poster materials."
+                            ],
+                            achievements: [
+                                "Recognized as Top Performer twice (Feb & Apr 2024).",
+                                "Nominated multiple times for outstanding team contributions, validating excellence in cross-functional collaboration."
+                            ]
+                        },
+                        {
+                            role: "Multimedia, Graphic, & Production Hardware Intern",
+                            company: "FOOTFALL CAM (META RESEARCH)",
+                            period: "FEB 2023 - JUN 2023",
+                            icon: "box",
+                            duties: [
+                                "Designed posters, packaging decals, and product visuals for export to the U.S. market.",
+                                "Created 3D models and VR filters using Unity.",
+                                "Developed design templates and maintained the U.S. customer-facing Nursery Web.",
+                                "Managed 8 production stations for Footfall Cam assembly, including testing and inspection."
+                            ],
+                            achievements: []
+                        },
+                        {
+                            role: "Part Time - Graphic Designer",
+                            company: "RMD INTERNATIONAL SDN BHD",
+                            period: "NOV 2021 - JUL 2022",
+                            icon: "palette",
+                            duties: [
+                                "Designed marketing materials suchs as posters, flyers, and banners.",
+                                "Edited and refined corporate brochures to improve clarity and brand messaging."
+                            ],
+                            achievements: []
+                        }
+                    ]
+                },
+                skills: {
+                    title: "Core Skill Stack",
+                    languages: "Language Proficiency: Malay (Native), Chinese (Native), English (Fluent)",
+                    categories: [
+                        {
+                            title: "UI/UX & Design",
+                            icon: "layout-grid",
+                            tags: ["Figma", "Framer", "Design System", "Web & Mobile Design", "User Experience (UX)", "Visual/Graphic Design"],
+                            color: "primary"
+                        },
+                        {
+                            title: "Content & Media",
+                            icon: "video",
+                            tags: ["Videography", "Adobe Premiere Pro", "Capcut", "Adobe Lightroom", "3D Modeling (Unity)", "Adobe Photoshop"],
+                            color: "accent"
+                        },
+                        {
+                            title: "Marketing & Tools",
+                            icon: "bar-chart-3",
+                            tags: ["Paid Social Advertising", "Data-Driven Optimization", "Lead Conversion", "Cross-functional Collaboration", "Canva", "Excel"],
+                            color: "green"
+                        }
+                    ]
+                },
+                contact: {
+                    title: "Ready to Collaborate",
+                    p1: "Whether it's a creative project, a UI/UX challenge, or a marketing growth opportunity, I am eager to bring my design and business skills to the next team.",
+                    ref: "Key Reference: LAI SWEE PIN, Chief Product Officer, ProppyApp Sdn Bhd"
+                },
+                footer: "© 2025 Patrick Cheng Ming Huan. All rights reserved."
+            },
+            en: {
+                nav: { about: "About Me", experience: "Experience", skills: "Skills", contact: "Contact" },
+                hero: {
+                    greeting: "Hello, I am",
+                    title: "Patrick Cheng Ming Huan",
+                    subtitle: "New Media Designer · UI/UX Specialist · Growth-Driven Marketer",
+                    cta_work: "View My Work",
+                },
+                about: {
+                    title: "About Me & Education",
+                    intro_1: "Creative and skilled in transforming ideas into impactful results. A strong team player with excellent communication skills and a deep passion for graphic and 3D design.",
+                    intro_2: "Trained in art since age 7, with a strong sense of responsibility, visual intuition, and innovation-driven thinking, committed to excellence in design and marketing.",
+                    edu_title: "Education",
+                    edu_usm: {
+                        degree: "Bachelor of Fine Arts (Hons) New Media Design and Technology",
+                        institution: "UNIVERSITY SAINS MALAYSIA - CGPA: 3.50",
+                        year: "2019-2023"
+                    },
+                    edu_stpm: {
+                        degree: "STPM - CGPA: 3.17",
+                        institution: "SEKOLAH MENENGAH KEBANGSAAN LAKSAMANA",
+                        year: "2017-2018"
+                    }
+                },
+                experience: {
+                    title: "Professional Experience & Achievements",
+                    list: [
+                        {
+                            role: "Marketing Executive",
+                            company: "RUBINO INDUSTRY SDN BHD",
+                            period: "AUG 2025 - PRESENT",
+                            icon: "trending-up",
+                            duties: [
+                                "Developed and executed a cohesive content strategy across platforms (FB, TikTok, IG, Xiao Hong Shu), producing and editing dynamic video (Reels) and high-impact banners.",
+                                "Led the visual redesign of core brand assets (product catalogs, name cards), ensuring brand consistency.",
+                                "Collaborated with management to strategize and execute paid social media advertising campaigns to maximize ROI."
+                            ],
+                            achievements: [
+                                "Drove a significant 605.2% increase in total interactions (677 interactions) on the primary Facebook account through successful organic engagement strategies.",
+                                "Achieved 10.75% audience growth on TikTok, resulting in over 20,700 video views.",
+                                "Successfully converted online leads into monthly customers, directly contributing to increased sales revenue."
+                            ]
+                        },
+                        {
+                            role: "UI/UX Designer & Marketing Material Assistant",
+                            company: "PROPPYAPP SDN BHD",
+                            period: "JUL 2023 - JUL 2025",
+                            icon: "pen-tool",
+                            duties: [
+                                "Led UI/UX design and iteration for core products, establishing and maintaining a consistent Design System.",
+                                "Collaborated closely with development teams within the Scrum framework, creating high-fidelity interactive prototypes.",
+                                "Executed the redesign of the main corporate website, optimizing for responsive design across devices.",
+                                "Managed corporate social media content, producing engaging video, animated, and static poster materials."
+                            ],
+                            achievements: [
+                                "Recognized as Top Performer twice (Feb & Apr 2024).",
+                                "Nominated multiple times for outstanding team contributions, validating excellence in cross-functional collaboration."
+                            ]
+                        },
+                        {
+                            role: "Multimedia, Graphic, & Production Hardware Intern",
+                            company: "FOOTFALL CAM (META RESEARCH)",
+                            period: "FEB 2023 - JUN 2023",
+                            icon: "box",
+                            duties: [
+                                "Designed posters, packaging decals, and product visuals for export to the U.S. market.",
+                                "Created 3D models and VR filters using Unity.",
+                                "Developed design templates and maintained the U.S. customer-facing Nursery Web.",
+                                "Managed 8 production stations for Footfall Cam assembly, including testing and inspection."
+                            ],
+                            achievements: []
+                        },
+                        {
+                            role: "Part Time - Graphic Designer",
+                            company: "RMD INTERNATIONAL SDN BHD",
+                            period: "NOV 2021 - JUL 2022",
+                            icon: "palette",
+                            duties: [
+                                "Designed marketing materials suchs as posters, flyers, and banners.",
+                                "Edited and refined corporate brochures to improve clarity and brand messaging."
+                            ],
+                            achievements: []
+                        }
+                    ]
+                },
+                skills: {
+                    title: "Core Skill Stack",
+                    languages: "Language Proficiency: Malay (Native), Chinese (Native), English (Fluent)",
+                    categories: [
+                        {
+                            title: "UI/UX & Design",
+                            icon: "layout-grid",
+                            tags: ["Figma", "Framer", "Design System", "Web & Mobile Design", "User Experience (UX)", "Visual/Graphic Design"],
+                            color: "primary"
+                        },
+                        {
+                            title: "Content & Media",
+                            icon: "video",
+                            tags: ["Videography", "Adobe Premiere Pro", "Capcut", "Adobe Lightroom", "3D Modeling (Unity)", "Adobe Photoshop"],
+                            color: "accent"
+                        },
+                        {
+                            title: "Marketing & Tools",
+                            icon: "bar-chart-3",
+                            tags: ["Paid Social Advertising", "Data-Driven Optimization", "Lead Conversion", "Cross-functional Collaboration", "Canva", "Excel"],
+                            color: "green"
+                        }
+                    ]
+                },
+                contact: {
+                    title: "Ready to Collaborate",
+                    p1: "Whether it's a creative project, a UI/UX challenge, or a marketing growth opportunity, I am eager to bring my design and business skills to the next team.",
+                    ref: "Key Reference: LAI SWEE PIN, Chief Product Officer, ProppyApp Sdn Bhd"
+                },
+                footer: "© 2025 Patrick Cheng Ming Huan. All rights reserved."
+            },
+            en: {
+                nav: { about: "About Me", experience: "Experience", skills: "Skills", contact: "Contact" },
+                hero: {
+                    greeting: "Hello, I am",
+                    title: "Patrick Cheng Ming Huan",
+                    subtitle: "New Media Designer · UI/UX Specialist · Growth-Driven Marketer",
+                    cta_work: "View My Work",
+                },
+                about: {
+                    title: "About Me & Education",
+                    intro_1: "Creative and skilled in transforming ideas into impactful results. A strong team player with excellent communication skills and a deep passion for graphic and 3D design.",
+                    intro_2: "Trained in art since age 7, with a strong sense of responsibility, visual intuition, and innovation-driven thinking, committed to excellence in design and marketing.",
+                    edu_title: "Education",
+                    edu_usm: {
+                        degree: "Bachelor of Fine Arts (Hons) New Media Design and Technology",
+                        institution: "UNIVERSITY SAINS MALAYSIA - CGPA: 3.50",
+                        year: "2019-2023"
+                    },
+                    edu_stpm: {
+                        degree: "STPM - CGPA: 3.17",
+                        institution: "SEKOLAH MENENGAH KEBANGSAAN LAKSAMANA",
+                        year: "2017-2018"
+                    }
+                },
+                experience: {
+                    title: "Professional Experience & Achievements",
+                    list: [
+                        {
+                            role: "Marketing Executive",
+                            company: "RUBINO INDUSTRY SDN BHD",
+                            period: "AUG 2025 - PRESENT",
+                            icon: "trending-up",
+                            duties: [
+                                "Developed and executed a cohesive content strategy across platforms (FB, TikTok, IG, Xiao Hong Shu), producing and editing dynamic video (Reels) and high-impact banners.",
+                                "Led the visual redesign of core brand assets (product catalogs, name cards), ensuring brand consistency.",
+                                "Collaborated with management to strategize and execute paid social media advertising campaigns to maximize ROI."
+                            ],
+                            achievements: [
+                                "Drove a significant 605.2% increase in total interactions (677 interactions) on the primary Facebook account through successful organic engagement strategies.",
+                                "Achieved 10.75% audience growth on TikTok, resulting in over 20,700 video views.",
+                                "Successfully converted online leads into monthly customers, directly contributing to increased sales revenue."
+                            ]
+                        },
+                        {
+                            role: "UI/UX Designer & Marketing Material Assistant",
+                            company: "PROPPYAPP SDN BHD",
+                            period: "JUL 2023 - JUL 2025",
+                            icon: "pen-tool",
+                            duties: [
+                                "Led UI/UX design and iteration for core products, establishing and maintaining a consistent Design System.",
+                                "Collaborated closely with development teams within the Scrum framework, creating high-fidelity interactive prototypes.",
+                                "Executed the redesign of the main corporate website, optimizing for responsive design across devices.",
+                                "Managed corporate social media content, producing engaging video, animated, and static poster materials."
+                            ],
+                            achievements: [
+                                "Recognized as Top Performer twice (Feb & Apr 2024).",
+                                "Nominated multiple times for outstanding team contributions, validating excellence in cross-functional collaboration."
+                            ]
+                        },
+                        {
+                            role: "Multimedia, Graphic, & Production Hardware Intern",
+                            company: "FOOTFALL CAM (META RESEARCH)",
+                            period: "FEB 2023 - JUN 2023",
+                            icon: "box",
+                            duties: [
+                                "Designed posters, packaging decals, and product visuals for export to the U.S. market.",
+                                "Created 3D models and VR filters using Unity.",
+                                "Developed design templates and maintained the U.S. customer-facing Nursery Web.",
+                                "Managed 8 production stations for Footfall Cam assembly, including testing and inspection."
+                            ],
+                            achievements: []
+                        },
+                        {
+                            role: "Part Time - Graphic Designer",
+                            company: "RMD INTERNATIONAL SDN BHD",
+                            period: "NOV 2021 - JUL 2022",
+                            icon: "palette",
+                            duties: [
+                                "Designed marketing materials suchs as posters, flyers, and banners.",
+                                "Edited and refined corporate brochures to improve clarity and brand messaging."
+                            ],
+                            achievements: []
+                        }
+                    ]
+                },
+                skills: {
+                    title: "Core Skill Stack",
+                    languages: "Language Proficiency: Malay (Native), Chinese (Native), English (Fluent)",
+                    categories: [
+                        {
+                            title: "UI/UX & Design",
+                            icon: "layout-grid",
+                            tags: ["Figma", "Framer", "Design System", "Web & Mobile Design", "User Experience (UX)", "Visual/Graphic Design"],
+                            color: "primary"
+                        },
+                        {
+                            title: "Content & Media",
+                            icon: "video",
+                            tags: ["Videography", "Adobe Premiere Pro", "Capcut", "Adobe Lightroom", "3D Modeling (Unity)", "Adobe Photoshop"],
+                            color: "accent"
+                        },
+                        {
+                            title: "Marketing & Tools",
+                            icon: "bar-chart-3",
+                            tags: ["Paid Social Advertising", "Data-Driven Optimization", "Lead Conversion", "Cross-functional Collaboration", "Canva", "Excel"],
+                            color: "green"
+                        }
+                    ]
+                },
+                contact: {
+                    title: "Ready to Collaborate",
+                    p1: "Whether it's a creative project, a UI/UX challenge, or a marketing growth opportunity, I am eager to bring my design and business skills to the next team.",
+                    ref: "Key Reference: LAI SWEE PIN, Chief Product Officer, ProppyApp Sdn Bhd"
+                },
+                footer: "© 2025 Patrick Cheng Ming Huan. All rights reserved."
+            }
+        };
+
+        let currentLang = 'cn'; // Default language is Chinese
+
+        // --- RENDER FUNCTIONS ---
+        
+        function getLangContent() {
+            return CONTENT[currentLang];
+        }
+
+        // Helper function to render Lucide icons
+        function renderIcon(name, classes) {
+            // FIXED: Instead of trying to render the SVG here (which causes the TypeError),
+            // we return the HTML structure Lucide expects to replace with an SVG later.
+            return `<span class="${classes}"><i data-lucide="${name}"></i></span>`;
+        }
+
+        // Renders the Navigation
+        function renderNav() {
+            const content = getLangContent();
+            const navLinks = document.getElementById('nav-links');
+            navLinks.innerHTML = `
+                <a href="#about" class="hover:text-[var(--color-primary)] transition duration-200">${content.nav.about}</a>
+                <a href="#experience" class="hover:text-[var(--color-primary)] transition duration-200">${content.nav.experience}</a>
+                <a href="#skills" class="hover:text-[var(--color-primary)] transition duration-200">${content.nav.skills}</a>
+                <a href="#contact" class="hover:text-[var(--color-primary)] transition duration-200">${content.nav.contact}</a>
+            `;
+            // Ensure icons are created after dynamic insertion (for the other render functions)
+            lucide.createIcons();
+        }
+
+        // Renders the Hero Section
+        function renderHero() {
+            const content = getLangContent();
+            const heroSection = document.getElementById('hero');
+            heroSection.innerHTML = `
+                <p class="text-2xl sm:text-3xl font-light mb-4">${content.hero.greeting}</p>
+                <h2 class="text-5xl sm:text-7xl lg:text-8xl font-extrabold tracking-tight mb-6 bg-clip-text text-transparent"
+                    style="background-image: linear-gradient(135deg, var(--color-primary), var(--color-accent));">
+                    ${content.hero.title}
+                </h2>
+                <p class="text-3xl sm:text-4xl font-medium text-gray-600 dark:text-gray-400">
+                    ${content.hero.subtitle}
+                </p>
+                <div class="mt-8 space-x-4">
+                    <a href="#experience" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-sm text-white bg-[var(--color-primary)] hover:opacity-90 transition duration-300">
+                        ${content.hero.cta_work}
+                        <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/atrickk/" target="_blank" class="inline-flex items-center px-6 py-3 border border-2 border-[var(--color-primary)] text-base font-medium rounded-full text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white transition duration-300">
+                        LinkedIn
+                        <i data-lucide="linkedin" class="w-4 h-4 ml-2"></i>
+                    </a>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        // Renders the About Section
+        function renderAbout() {
+            const content = getLangContent();
+            document.getElementById('about-title').textContent = content.about.title;
+            const aboutContent = document.getElementById('about-content');
+            
+            const introHtml = `
+                <!-- 个人介绍 -->
+                <div class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+                    <p class="mb-4 flex items-start">
+                        ${renderIcon('wand-2', 'w-6 h-6 mr-3 mt-1 text-[var(--color-accent)] flex-shrink-0')}
+                        <span>${content.about.intro_1}</span>
+                    </p>
+                    <p class="flex items-start">
+                        ${renderIcon('ruler', 'w-6 h-6 mr-3 mt-1 flex-shrink-0 text-[var(--color-accent)]')}
+                        <span>${content.about.intro_2}</span>
+                    </p>
+                </div>
+                
+                <!-- 教育背景 -->
+                <div class="mt-6 pt-6 border-t border-[var(--color-border)]">
+                    <h4 class="text-xl font-semibold mb-3 flex items-center text-[var(--color-primary)]">
+                        ${renderIcon('graduation-cap', 'w-5 h-5 mr-2')}
+                        ${content.about.edu_title}
+                    </h4>
+                    <ul class="space-y-3">
+                        <li class="flex justify-between items-start text-base">
+                            <div>
+                                <p class="font-medium">${content.about.edu_usm.degree}</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">${content.about.edu_usm.institution}</p>
+                            </div>
+                            <span class="text-sm font-semibold flex-shrink-0 ml-4">${content.about.edu_usm.year}</span>
+                        </li>
+                        <li class="flex justify-between items-start text-base">
+                            <div>
+                                <p class="font-medium">${content.about.edu_stpm.degree}</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">${content.about.edu_stpm.institution}</p>
+                            </div>
+                            <span class="text-sm font-semibold flex-shrink-0 ml-4">${content.about.edu_stpm.year}</span>
+                        </li>
+                    </ul>
+                </div>
+            `;
+            aboutContent.innerHTML = introHtml;
+            lucide.createIcons();
+        }
+
+        // Renders the Experience Section (New Card Layout)
+        function renderExperience() {
+            const content = getLangContent();
+            document.getElementById('experience-title').textContent = content.experience.title;
+            const experienceList = document.getElementById('experience-list');
+            
+            const html = content.experience.list.map(job => {
+                const dutiesHtml = job.duties.map(d => `<li class="flex items-start"><span class="mr-2 text-[var(--color-primary)]">•</span><span>${d}</span></li>`).join('');
+                const achievementsHtml = job.achievements.length > 0 ? `
+                    <div class="mt-4 pt-4 text-left achievement-box rounded-lg p-4">
+                        <p class="font-bold text-sm text-[var(--color-text)] mb-2">🚀 ${currentLang === 'cn' ? '增长亮点/成就认可:' : 'Growth/Performance Highlights:'}</p>
+                        <ul class="text-xs list-disc list-inside font-medium space-y-1">
+                            ${job.achievements.map(a => `<li>${a}</li>`).join('')}
+                        </ul>
+                    </div>
+                ` : '';
+
+                return `
+                    <div class="card p-6 rounded-xl shadow-lg hover:shadow-2xl transition duration-300 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="text-2xl font-semibold text-[var(--color-accent)] flex items-center">
+                                    ${renderIcon(job.icon, 'w-6 h-6 mr-3')}
+                                    ${job.role}
+                                </h4>
+                                <p class="text-sm font-bold text-[var(--color-primary)] flex-shrink-0">${job.period}</p>
+                            </div>
+                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-4">${job.company}</p>
+                            
+                            <ul class="space-y-2 text-sm text-left text-gray-700 dark:text-gray-300 list-none pl-0">
+                                ${dutiesHtml}
+                            </ul>
+                        </div>
+                        ${achievementsHtml}
+                    </div>
+                `;
+            }).join('');
+
+            experienceList.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        // Renders the Skills Section
+        function renderSkills() {
+            const content = getLangContent();
+            document.getElementById('skills-title').textContent = content.skills.title;
+            const skillsContent = document.getElementById('skills-content');
+            
+            const categoriesHtml = content.skills.categories.map(cat => {
+                const tagsHtml = cat.tags.map(tag => `<span class="tag tag-${cat.color}">${tag}</span>`).join('');
+                return `
+                    <div class="card p-8 rounded-2xl shadow-lg">
+                        <div class="flex items-center mb-4 text-${cat.color === 'primary' ? '[var(--color-primary)]' : cat.color === 'accent' ? '[var(--color-accent)]' : 'green-500 dark:text-green-400'}">
+                            ${renderIcon(cat.icon, 'w-8 h-8 mr-3')}
+                            <h4 class="text-2xl font-semibold">${cat.title}</h4>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            ${tagsHtml}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            skillsContent.innerHTML = categoriesHtml;
+            
+            const languageHtml = `
+                <div class="mt-12 text-center col-span-full">
+                    <p class="text-lg font-medium text-gray-700 dark:text-gray-300">
+                        🗣️ **${content.skills.languages}**
+                    </p>
+                </div>
+            `;
+            skillsContent.insertAdjacentHTML('beforeend', languageHtml);
+            lucide.createIcons();
+        }
+
+        // Renders the Contact Section
+        function renderContact() {
+            const content = getLangContent();
+            document.getElementById('contact-title').textContent = content.contact.title;
+            const contactContent = document.getElementById('contact-content');
+            
+            contactContent.innerHTML = `
+                <p class="text-xl text-gray-700 dark:text-gray-300 mb-8 max-w-2xl mx-auto">${content.contact.p1}</p>
+                <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-8">
+                    <div class="flex items-center justify-center">
+                        ${renderIcon('mail', 'w-5 h-5 mr-2 text-[var(--color-primary)]')}
+                        <span class="font-medium">Atrickcheng@gmail.com</span>
+                    </div>
+                    <div class="flex items-center justify-center">
+                        ${renderIcon('phone', 'w-5 h-5 mr-2 text-[var(--color-primary)]')}
+                        <span class="font-medium">(+60) 1111294498</span>
+                    </div>
+                </div>
+                <div class="mt-8 pt-4 border-t border-[var(--color-border)] inline-block">
+                    <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">
+                        ${renderIcon('user-check', 'w-4 h-4 inline-block mr-1')}
+                        ${content.contact.ref}
+                    </p>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        // --- MAIN RENDER LOOP ---
+        function renderAllContent() {
+            renderNav();
+            renderHero();
+            renderAbout();
+            renderExperience();
+            renderSkills();
+            renderContact();
+            document.getElementById('footer-text').textContent = CONTENT[currentLang].footer;
+            // Update lang button text
+            const langToggle = document.getElementById('lang-toggle');
+            langToggle.textContent = currentLang === 'cn' ? 'EN/中文' : '中文/EN';
+        }
+
+        // --- EVENT HANDLERS ---
+        
+        // Language Toggle
+        const langToggle = document.getElementById('lang-toggle');
+        langToggle.addEventListener('click', () => {
+            currentLang = currentLang === 'cn' ? 'en' : 'cn';
+            document.documentElement.lang = currentLang;
+            renderAllContent();
+        });
+
+        // Theme Toggle (from previous version)
+        const themeToggle = document.getElementById('theme-toggle');
+        const root = document.documentElement;
+
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                root.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                updateIcon('sun');
+            } else {
+                root.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                updateIcon('moon');
+            }
+        }
+
+        // FIXED: Updated to safely replace the icon by using data-lucide attribute and re-running createIcons
+        function updateIcon(iconName) {
+            const iconElement = themeToggle.querySelector('i');
+            if (iconElement) {
+                iconElement.innerHTML = ''; // Clear existing content (SVG)
+                iconElement.setAttribute('data-lucide', iconName); // Set the new icon name
+                // Re-run createIcons. This will find the <i> tag with data-lucide and replace it with the correct SVG.
+                // This is the robust way to dynamically update a Lucide icon element in the DOM.
+                lucide.createIcons(); 
+            }
+        }
+
+        // Initial Theme Load
+        const storedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        // Call createIcons once early to ensure initial icons in the DOM are rendered before theme logic runs
+        lucide.createIcons(); 
+
+        if (storedTheme === 'dark' || (!storedTheme && prefersDark)) {
+            setTheme('dark');
+        } else {
+            setTheme('light');
+        }
+
+        // Theme Toggle Listener
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = root.classList.contains('dark') ? 'dark' : 'light';
+            setTheme(currentTheme === 'light' ? 'dark' : 'light');
+        });
+        
+        // Tailwind Tag Styles (Custom Utility)
+        const style = document.createElement('style');
+        style.innerHTML = `
+            .tag {
+                /* 主色调标签 */
+                @apply inline-flex items-center px-3 py-1 text-sm font-medium rounded-full bg-[var(--color-primary)] bg-opacity-10 text-[var(--color-primary)] transition duration-200 hover:bg-opacity-20;
+            }
+            .tag-accent {
+                /* 强调色标签 */
+                @apply inline-flex items-center px-3 py-1 text-sm font-medium rounded-full bg-[var(--color-accent)] bg-opacity-10 text-[var(--color-accent)] transition duration-200 hover:bg-opacity-20;
+            }
+            .tag-green {
+                /* 绿色标签 */
+                @apply inline-flex items-center px-3 py-1 text-sm font-medium rounded-full bg-green-500 bg-opacity-10 text-green-500 dark:text-green-400 transition duration-200 hover:bg-opacity-20;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initial Content Render
+        document.addEventListener('DOMContentLoaded', renderAllContent);
+
+    </script>
+</body>
+</html>
